@@ -1,5 +1,26 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div class="">
+    <DataPicker initDate="2020-9-10" @date-change="dataChange"></DataPicker>
   </div>
 </template>
+
+<script>
+import DataPicker from "@/components/DatePicker/picker";
+
+export default {
+  components: {
+    DataPicker
+  },
+  data(){
+    return{
+      dataValue:""
+    }
+  },
+  methods: {
+    dataChange({ year, month, day, format }) {
+      this.dataValue = format;
+    },
+  },
+};
+</script>
+
