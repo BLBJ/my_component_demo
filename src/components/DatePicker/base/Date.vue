@@ -109,6 +109,7 @@ export default {
   position: absolute;
   left: 0;
   top: calc(100% + 2px);
+  z-index: 9999;
   display: inline-block;
   background: #fff;
   box-shadow: 0 2px 7px rgba(0, 0, 0, 0.15);
