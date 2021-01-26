@@ -18,7 +18,6 @@
           :data-value="item.value"
           :data-type="item.type"
           :class="{
-            grey: item.type !== 'current',
             active: isActive && item.value === new Date().getDate(),
             selected:
               item.type === 'current' &&
@@ -61,43 +60,47 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const weeks = ["日", "一", "二", "三", "四", "五", "六"];
+    const weeks = [ "一", "二", "三", "四", "五", "六","日",];
+
+    //星期数转化 周一周日 0~6
+    let getDay = (date) => {
+      let day = date.getDay();
+      if (day === 0) day = 7;
+      return day - 1;
+    };
     let { year, month } = toRefs(props);
-    // let yearOrMonthChange = ref(false);
-    // watch(year, (newValue, oldValue) => {
-    //   yearOrMonthChange.value = true;
-    // });
-    // watch(month, (newValue, oldValue) => {
-    //   yearOrMonthChange.value = true;
-    // });
     let daysArr = computed(() => {
-      let year_value = year.value;
-      let month_value = month.value;
-      const [prev_year, prev_month] = get_prev_year_month(
-        year_value,
-        month_value
-      );
-      const [next_year, next_month] = get_next_year_month(
-        year_value,
-        month_value
-      );
-      const days = get_days_by_year_month(year_value, month_value);
-      const days_prev = get_days_by_year_month(prev_year, prev_month);
-      const days_next = get_days_by_year_month(next_year, next_month);
-      let day_prev_slice = new Date(`${year_value}/${month_value}/1`).getDay();
-      let day_last_slice =
-        6 - new Date(`${year_value}/${month_value}/${days}`).getDay();
-      let day_arr = [...Array(days)].map((i, index) => ({
-        value: index + 1,
-        type: "current",
-      }));
-      let day_prev_arr = [...Array(days_prev)]
-        .map((i, index) => ({ value: index + 1, type: "prev" }))
-        .slice(days_prev - day_prev_slice, days_prev);
-      let day_next_arr = [...Array(days_next)]
-        .map((i, index) => ({ value: index + 1, type: "next" }))
-        .slice(0, day_last_slice);
-      return [...day_prev_arr, ...day_arr, ...day_next_arr];
+      let mon = month.value - 1;
+      let date_select = new Date(year.value, mon);
+      let before_arr = [],
+        current_month_arr = [],
+        after_arr = [];
+
+      let day_num = getDay(date_select);
+      let date_select_ = new Date(year.value, mon);
+      //* * * * 1 2 3 上个月的日历，如果存在
+      while (day_num > 0) {
+        date_select_.setDate(date_select_.getDate() - 1);
+        before_arr.unshift({ type: "before", value: date_select_.getDate() });
+        day_num--;
+      }
+      //month 当前日历数组
+      while (date_select.getMonth() === mon) {
+        current_month_arr.push({
+          value: date_select.getDate(),
+          type: "current",
+        });
+        date_select.setDate(date_select.getDate() + 1);
+      }
+
+      //下月补齐 27 28 29 39 * * *
+      if (getDay(date_select) !== 0) {
+        let num = getDay(date_select);
+        for (let i = num; i < 7; i++) {
+          after_arr.push({ value: i - num + 1, type: 'after' });
+        }
+      }
+      return [...before_arr, ...current_month_arr, ...after_arr];
     });
     let isActive = computed(() => {
       let year_value = year.value;
@@ -175,7 +178,8 @@ $height: 30px;
       cursor: pointer;
       border: 1px solid transparent;
     }
-    .grey {
+    span[data-type="before"],
+    span[data-type="after"] {
       color: #d8d4d4;
     }
     .active {
@@ -200,7 +204,7 @@ $height: 30px;
 
 .list-enter-active,
 .list-leave-active {
-  transition: all .5s ease;
+  transition: all 0.5s ease;
 }
 .list-enter-from,
 .list-leave-to {
