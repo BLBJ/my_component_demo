@@ -33,6 +33,9 @@
     ></TimeSelect>
     <button @click="showSelect">打开时间选择</button>
     <div>{{ selectTime }}</div>
+    <hr />
+
+    <Slide v-model="percent"></Slide>{{percent}}
   </div>
 </template>
 
@@ -43,6 +46,7 @@ import SmileLoading from "@/components/loading/SmileLoading";
 import CircleLoading from "@/components/loading/CircleLoading";
 import TimeSelect from "@/components/TimeSelect/index.vue";
 import Switch from "@/components/switch";
+import Slide from "@/components/Slide";
 
 @Options({
   components: {
@@ -51,6 +55,7 @@ import Switch from "@/components/switch";
     CircleLoading,
     TimeSelect,
     Switch,
+    Slide,
   },
 })
 export default class Home extends Vue {
@@ -62,6 +67,7 @@ export default class Home extends Vue {
     minute: "30",
   };
   dataValue = "";
+  percent = 0;
   pickerChange(val) {
     console.log(JSON.stringify({ ...val }));
     this.selectTime = val;
@@ -71,13 +77,14 @@ export default class Home extends Vue {
     console.log(val);
   }
   handle(event) {
-    let type = event.target.dataset.type || "";
+    const type = event.target.dataset.type || "";
     if (type) {
       this.$Message[type]("这是一个提示");
     }
   }
   dataChange({ year, month, day, format }) {
     this.dataValue = format;
+    console.log(year, month, day);
   }
   showSelect() {
     this.showTimeSelect = true;
@@ -132,7 +139,7 @@ export default class Home extends Vue {
 button {
   margin: 6px;
 }
-.flex{
+.flex {
   display: flex;
   align-items: center;
 }
