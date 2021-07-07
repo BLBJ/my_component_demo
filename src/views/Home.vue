@@ -5,6 +5,7 @@
     <DataPicker initDate="2020-9-10" @date-change="dataChange"></DataPicker>
     <br /><br /><br />
     <hr />
+        <button @click="showMessage = true">打开消息框</button>
     <div @click="handle">
       消息提示：
       <button data-type="success">成功</button>
@@ -33,9 +34,13 @@
     ></TimeSelect>
     <button @click="showSelect">打开时间选择</button>
     <div>{{ selectTime }}</div>
+
+    <button @click="showMessage = true">打开消息框</button>
     <hr />
 
-    <Slide v-model="percent"></Slide>{{percent}}
+    <Slide v-model="percent"></Slide>{{ percent }}
+    <br />
+    <Message v-model="showMessage"></Message>
   </div>
 </template>
 
@@ -47,6 +52,7 @@ import CircleLoading from "@/components/loading/CircleLoading";
 import TimeSelect from "@/components/TimeSelect/index.vue";
 import Switch from "@/components/switch";
 import Slide from "@/components/Slide";
+import Message from "@/components/Message.vue";
 
 @Options({
   components: {
@@ -56,6 +62,7 @@ import Slide from "@/components/Slide";
     TimeSelect,
     Switch,
     Slide,
+    Message,
   },
 })
 export default class Home extends Vue {
@@ -68,6 +75,7 @@ export default class Home extends Vue {
   };
   dataValue = "";
   percent = 0;
+  showMessage = false;
   pickerChange(val) {
     console.log(JSON.stringify({ ...val }));
     this.selectTime = val;

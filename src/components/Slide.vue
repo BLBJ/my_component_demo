@@ -39,7 +39,7 @@ export default {
     },
   },
   mounted() {
-    this.originWidth = document.querySelector(".slide_panel").offsetWidth;
+    this.originWidth = document.querySelector(".slide_panel").offsetWidth || 0;
     const point = document.querySelector(".slide_point");
     point.addEventListener("touchstart", this.onTouchStart, false);
   },
